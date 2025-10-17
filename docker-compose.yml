@@ -1,5 +1,3 @@
-version: "3.9"
-
 # Local infra stack for the Secure AI Platform.
 # Enable services incrementally by uncommenting sections below.
 
