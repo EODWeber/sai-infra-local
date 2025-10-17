@@ -1,0 +1,78 @@
+# Local infra stack for the Secure AI Platform.
+# Enable services incrementally by uncommenting sections below.
+
+services:
+  # mlflow:
+  #   image: ghcr.io/mlflow/mlflow:latest
+  #   container_name: mlflow
+  #   command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlflow/artifacts --host 0.0.0.0 --port 5000
+  #   ports:
+  #     - "5000:5000"
+  #   volumes:
+  #     - mlflow-data:/mlflow
+  #   networks: [sai-net]
+
+  # loki:
+  #   image: grafana/loki:2.9.8
+  #   container_name: loki
+  #   command: -config.file=/etc/loki/local-config.yaml
+  #   ports:
+  #     - "3100:3100"
+  #   volumes:
+  #     - loki-data:/loki
+  #   networks: [sai-net]
+
+  # grafana:
+  #   image: grafana/grafana:11.2.1
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #   depends_on: [loki]
+  #   networks: [sai-net]
+
+  # otel-collector:
+  #   image: otel/opentelemetry-collector:0.106.0
+  #   container_name: otel-collector
+  #   # command: ["--config=/etc/otel-collector.yaml"]
+  #   # volumes:
+  #   #   - ./otel-collector.yaml:/etc/otel-collector.yaml:ro
+  #   ports:
+  #     - "4317:4317"   # OTLP gRPC
+  #     - "4318:4318"   # OTLP HTTP
+  #   networks: [sai-net]
+
+  # vault:
+  #   image: hashicorp/vault:1.17
+  #   container_name: vault
+  #   cap_add:
+  #     - IPC_LOCK
+  #   environment:
+  #     VAULT_DEV_ROOT_TOKEN_ID: root
+  #     VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+  #   ports:
+  #     - "8200:8200"
+  #   networks: [sai-net]
+
+  # caddy:
+  #   image: caddy:2.8
+  #   container_name: caddy
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile:ro
+  #   depends_on: [grafana, mlflow]
+  #   networks: [sai-net]
+
+networks:
+  sai-net:
+    driver: bridge
+
+volumes:
+  mlflow-data:
+  loki-data:
+  grafana-data:

@@ -1,0 +1,60 @@
+# ─────────────────────────────────────────────────────────────
+# Secure AI Platform — Local Reverse Proxy (Caddy)
+# Location: ./Caddyfile
+# Used by: sai-infra-local/docker-compose.yml
+# ─────────────────────────────────────────────────────────────
+
+{
+	# Global options
+	auto_https off            # disable HTTPS for localhost; enable later with TLS certs
+	admin off                 # disable admin API
+	log {
+		level INFO
+		output stdout
+	}
+}
+
+# Root site (local dashboard)
+http://localhost {
+	# Simple landing page to confirm proxy is working
+	respond "Secure AI Platform — Local Infra is running" 200
+}
+
+# ─────────── Proxy stubs (uncomment as services come online) ───────────
+
+# MLflow UI
+# http://mlflow.localhost {
+# 	reverse_proxy mlflow:5000
+# }
+
+# Grafana
+# http://grafana.localhost {
+# 	reverse_proxy grafana:3000
+# }
+
+# Loki
+# http://loki.localhost {
+# 	reverse_proxy loki:3100
+# }
+
+# Vault
+# http://vault.localhost {
+# 	reverse_proxy vault:8200
+# }
+
+# Observability endpoint (OTel Collector)
+# http://otel.localhost {
+# 	reverse_proxy otel-collector:4318
+# }
+
+# API Gateway (future)
+# http://api.localhost {
+# 	reverse_proxy sai-inference-api:8000
+# }
+
+# ─────────────── Notes ───────────────
+# • All “*.localhost” hostnames resolve automatically on modern OSes.
+# • To enable HTTPS locally:
+#   1. Replace 'auto_https off' with 'auto_https disable_redirects'
+#   2. Add certificates or use Caddy’s local CA with 'caddy trust'
+# • Adjust ports in docker-compose.yml if you enable multiple proxies.
